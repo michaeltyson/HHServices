@@ -33,7 +33,7 @@
 @property (nonatomic, retain, readonly) NSString* resolvedHostName;
 @property (nonatomic, retain, readonly) NSArray* resolvedAddresses;
 @property (nonatomic, retain, readonly) NSData* txtData;
-
+@property (nonatomic, assign, readonly) uint16_t port;
 
 - (id) initWithName:(NSString*)svcName type:(NSString*)svcType domain:(NSString*)svcDomain;
 - (id) initWithName:(NSString*)svcName type:(NSString*)svcType domain:(NSString*)svcDomain includeP2P:(BOOL)includeP2P;

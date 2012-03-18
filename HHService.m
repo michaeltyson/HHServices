@@ -22,7 +22,7 @@
 @property (nonatomic, retain, readwrite) NSString* resolvedHostName;
 @property (nonatomic, retain, readwrite) NSArray* resolvedAddresses;
 @property (nonatomic, retain, readwrite) NSData* txtData;
-@property (nonatomic) uint16_t port;
+@property (nonatomic, assign, readwrite) uint16_t port;
 
 - (void) didResolveService:(DNSServiceErrorType)error hostName:(NSString*)hostName txtData:(NSData*)_txtData;
 
@@ -41,7 +41,7 @@ static void getAddrInfoCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint
 
         // Set port if not set
         struct sockaddr_in* sin = (struct sockaddr_in*)address;
-        if( sin->sin_port == 0 ) sin->sin_port = serviceResolver.port;
+        if( sin->sin_port == 0 ) sin->sin_port = htons(serviceResolver.port);
 
         NSData* addressData = [NSData dataWithBytes:address length:sizeof(struct sockaddr)];
         for(NSData* existingAddrData in serviceResolver.resolvedAddresses) {
@@ -63,7 +63,7 @@ static void resolveCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t
     BOOL moreComing = flags & kDNSServiceFlagsMoreComing;
 
     if (errorCode == kDNSServiceErr_NoError) {
-        serviceResolver.port = port;
+        serviceResolver.port = ntohs(port);
 
         // Get IP-address(es)
         DNSServiceRef getInfoRef;
